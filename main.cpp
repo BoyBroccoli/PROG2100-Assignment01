@@ -2,18 +2,18 @@
 #include <fstream>
 #include <string>
 #include <regex>
+#include <exception>
 
 using namespace std;
 
 int main() {
 
-    // defining a variable named fileName and content
-    std::string fileName;
-    std:: string outputFileName;
-    //std::string content; // to store the lines of the file being opened
+    // defining a variable named fileName and outputFileName
+    std::string fileName, outputFileName;
 
-    // Defining the regex for .cpp extension
-    // std::regex cppPattern("^.+\\.cpp$");
+
+    // Defining the regex for a Windows file path and .cpp extension
+    // source: https://stackoverflow.com/questions/15709711/c-regex-to-search-file-paths-in-a-string
     std::regex windowsPattern(".?:(\\\\[a-zA-Z 0-9]*)*.[a-zA-Z]*.cpp");
 
     // declaring a bool for validation
@@ -21,21 +21,25 @@ int main() {
 
     do {
         // asking user to input a file name
-        std::cout << "Please enter the file name:" << std::endl;
+        std::cout << "Please enter the file name (e.g. 'testFile' or 'c:\\testFile.cpp'" << std::endl;
         std::cin >> fileName;
 
         // checking if file matches the pattern
         if(std::regex_match(fileName, windowsPattern)) {
             std::cout << "Valid c++ file!" << std::endl;
 
-            // reading in the file
             validFileType = true;
         }
 
     } while(!validFileType);
 
+
+    // implement try catch block
+
+    try {
+
         // using ifstream to declare an object
-        std::ifstream file; // declaring an ifstream object
+        std::ifstream file;
 
         // opening the file
         file.open(fileName, ios::app);
@@ -43,8 +47,7 @@ int main() {
         if(file.is_open()){
 
             // reading the lines from the file and storing in a string
-            std:: string line;
-            std:: string content = "";
+            std:: string line, content;
 
             // Reading the file line by line for replacements
             do {
@@ -61,19 +64,27 @@ int main() {
 
             // now opening file in write mode to write <PRE> at beginning and </PRE> at the end
             std::ofstream outfile (outputFileName);
+
             outfile << "<PRE>\n" << content << "\n</PRE>";
-            //closing outfile
+
+            // closing outfile
             outfile.close();
 
         } else if (file.fail()){
             std::cout << "Error: Unable to open the file!" << std::endl;
 
             return 1;
+
         } else {
-            std::cout << "Error:File does not exist!" << std::endl;
+            std::cout << "Error: File does not exist!" << std::endl;
 
             return 1;
         }
+
+    }catch (exception e){
+
+    }
+
 
     return 0;
 }
