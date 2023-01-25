@@ -14,6 +14,7 @@ int main() {
 
     // Defining the regex for .cpp extension
     std::regex cppPattern("^.+\\.cpp$");
+    std::regex windowsPattern("^(?!^(PRN|AUX|CLOCK$|NUL|CON|COM\\d|LPT\\d|..)(..+)?$)[^\\x00-\\x1f\\?:\";|/]+\\.cpp$");
 
     // declaring a bool for validation
     bool validFileType = false;
@@ -50,7 +51,7 @@ int main() {
                 line = std::regex_replace(line,std::regex("<"),"&lt"); // replacing all "<" with "&lt"
                 line = std::regex_replace(line,std::regex(">"),"&gt"); // replacing all ">" with "&gt"
                 content += line + '\n';
-            } while(getline(file,line));
+            } while(std::getline(file,line));
 
             //closing the file
             file.close();
