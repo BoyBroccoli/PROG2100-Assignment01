@@ -13,8 +13,8 @@ int main() {
     //std::string content; // to store the lines of the file being opened
 
     // Defining the regex for .cpp extension
-    std::regex cppPattern("^.+\\.cpp$");
-    std::regex windowsPattern("^(?!^(PRN|AUX|CLOCK$|NUL|CON|COM\\d|LPT\\d|..)(..+)?$)[^\\x00-\\x1f\\?:\";|/]+\\.cpp$");
+    // std::regex cppPattern("^.+\\.cpp$");
+    std::regex windowsPattern(".?:(\\\\[a-zA-Z 0-9]*)*.[a-zA-Z]*.cpp");
 
     // declaring a bool for validation
     bool validFileType = false;
@@ -25,7 +25,7 @@ int main() {
         std::cin >> fileName;
 
         // checking if file matches the pattern
-        if(std::regex_match(fileName, cppPattern)) {
+        if(std::regex_match(fileName, windowsPattern)) {
             std::cout << "Valid c++ file!" << std::endl;
 
             // reading in the file
