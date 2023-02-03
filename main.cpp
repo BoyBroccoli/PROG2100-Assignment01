@@ -6,6 +6,15 @@
 
 using namespace std;
 
+struct MyException : public exception{
+public:
+    const string exceptionHandled(){
+        return "My Exception has been Handled!";
+    }
+}; // ending struct
+
+
+
 int main() {
 
     // defining a variable named fileName and outputFileName
@@ -18,20 +27,29 @@ int main() {
 
     // declaring a bool for validation
     bool validFileType = false;
+    try{
+        do {
+            // asking user to input a file name
+            std::cout << "Please enter the file name (e.g. 'testFile' or 'c:\\testFile.cpp'" << std::endl;
+            std::cin >> fileName;
 
-    do {
-        // asking user to input a file name
-        std::cout << "Please enter the file name (e.g. 'testFile' or 'c:\\testFile.cpp'" << std::endl;
-        std::cin >> fileName;
+            // checking if file matches the pattern
+            if(std::regex_match(fileName, windowsPattern)) {
+                std::cout << "Valid c++ file!" << std::endl;
 
-        // checking if file matches the pattern
-        if(std::regex_match(fileName, windowsPattern)) {
-            std::cout << "Valid c++ file!" << std::endl;
+                validFileType = true;
+            } else {
+                throw MyException(); // throwing my exception
 
-            validFileType = true;
-        }
+            }
 
-    } while(!validFileType);
+        } while(!validFileType);
+    } catch(MyException& e){
+        cout<< e.exceptionHandled() << endl;
+    } catch(...){
+
+    }
+
 
 
     // implement try catch block
@@ -44,17 +62,16 @@ int main() {
         // opening the file
         file.open(fileName, ios::app);
 
-        if(file.is_open()){
-
+        if(!file.fail()){
             // reading the lines from the file and storing in a string
             std:: string line, content;
 
             // Reading the file line by line for replacements
-            do {
-                line = std::regex_replace(line,std::regex("<"),"&lt"); // replacing all "<" with "&lt"
-                line = std::regex_replace(line,std::regex(">"),"&gt"); // replacing all ">" with "&gt"
-                content += line + '\n';
-            } while(std::getline(file,line));
+             while(std::getline(file,line)){
+                 line = std::regex_replace(line,std::regex("[<]"),"&lt"); // replacing all "<" with "&lt"
+                 line = std::regex_replace(line,std::regex("[>]"),"&gt"); // replacing all ">" with "&gt"
+                 content += line + '\n';
+             }
 
             //closing the file
             file.close();
@@ -82,7 +99,7 @@ int main() {
         }
 
     }catch (exception e){
-
+        cout<<e.what()<<endl;
     }
 
 
